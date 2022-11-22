@@ -1,5 +1,10 @@
 const express = require("express");
 const multer = require("multer");
+const fs = require("fs-extra");
+
+const { convert } = require("./processor");
+const inputFolder = "./uploads/videos";
+const outputFolder = "./uploads/videos/converted";
 
 const fileFilter = (req, file, cb) => {
   console.log("file", file);
@@ -26,12 +31,20 @@ const app = express();
 
 app.post("/upload/video", upload.single("video"), function (req, res, next) {
   console.log(req.file);
-  res.send("Success");
+  res.send(req.file);
   return;
+});
+
+app.get("/convert/:name", async (req, res) => {
+  console.log(req.params.name);
+  const fullPath = `${inputFolder}/${req.params.name}`;
+  const outputPath = `${outputFolder}/${req.params.name}`;
+  const result = await convert(fullPath, outputPath);
+  res.send("success", result);
 });
 
 const PORT = 4000;
 app.listen(PORT, async () => {
-  console.log(`listening on port ${PORT}`);
+  console.log(`listening on port ${PORT} on ${new Date().getTime()}`);
   console.log("application setup completed");
 });
