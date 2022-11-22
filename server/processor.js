@@ -10,14 +10,15 @@ async function execute(command) {
   return !!stderr;
 }
 
-const split = async (inputPath) => {
-  const commandStr = `ffmpeg -i ${inputPath} -vcodec copy -f segment -segment_time 00:10 out_h264_%02d.webm`;
+const split = async (inputPath, outputFolder, fileName) => {
+  const commandStr = `ffmpeg -i ${inputPath} -vcodec copy -f segment -segment_time 00:02 out_h264_%02d.mp4`;
   const isProcessed = await execute(commandStr);
   return isProcessed;
 };
 
 const convert = async (inputPath, outputPath) => {
-  const commandStr = `ffmpeg -i ${inputPath} -vcodec libx265 -crf 28 ${outputPath}.mkv`;
+  // const commandStr = `ffmpeg -i ${inputPath} -vcodec libx265 -crf 28 ${outputPath}.mkv`;
+  const commandStr = `ffmpeg -i ${inputPath} ${outputPath}.mkv`;
   const isProcessed = await execute(commandStr);
   return isProcessed;
 };

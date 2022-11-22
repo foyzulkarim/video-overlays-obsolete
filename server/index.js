@@ -2,9 +2,10 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs-extra");
 
-const { convert } = require("./processor");
+const { convert, split } = require("./processor");
 const inputFolder = "./uploads/videos";
 const outputFolder = "./uploads/videos/converted";
+const splittedFolder = `${outputFolder}/splitted`;
 
 const fileFilter = (req, file, cb) => {
   console.log("file", file);
@@ -40,6 +41,13 @@ app.get("/convert/:name", async (req, res) => {
   const fullPath = `${inputFolder}/${req.params.name}`;
   const outputPath = `${outputFolder}/${req.params.name}`;
   const result = await convert(fullPath, outputPath);
+  res.send("success", result);
+});
+
+app.get("/split/:name", async (req, res) => {
+  console.log(req.params.name);
+  const fullPath = `${outputFolder}/${req.params.name}`;
+  const result = await split(fullPath, outputFolder, req.params.name);
   res.send("success", result);
 });
 
